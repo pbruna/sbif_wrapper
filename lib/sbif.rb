@@ -4,7 +4,7 @@ require 'date'
 
 class SBIF
 
-  VERSION = "0.1"
+  VERSION = "0.1.1"
   SITE = "http://api.sbif.cl/api-sbif/recursos"
   INDICATORS = %w(uf utm dolar euro)
 
@@ -16,7 +16,7 @@ class SBIF
 
   INDICATORS.each do |indicator|
     method_name = indicator.to_sym
-    define_method(method_name) do |date = {}|
+    define_method(method_name) do |date|
       get_data(:currency => indicator, :date => date)
     end
   end
