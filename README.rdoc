@@ -27,9 +27,9 @@ Befor you can start using this wrapper you need to get an API Key. You can ask f
    require 'sbif'
    sbif = SBIF.new(:api_key => "fff9cd0d852f6bb3330fc7c55978761603cbcb10")
    
-   uf = sbif.euro(:year => 2011, :month => 9) # Array of Hashes (Dates and Values)
+   uf = sbif.euro(:year => 2011, :month => 9) # Hash => Date:Value
 
-   dolar = sbif.dolar() # Value for today
+   dolar = sbif.dolar # Value for today
 
    utm = sbif.utm(:month => 9) # As we can not known for which year, we return the value for today
   
@@ -42,7 +42,7 @@ That is for now
 
 == INSTALL:
 
-* gem install sbif_wrapper
+* gem install sbif
 
 
 == LICENSE:

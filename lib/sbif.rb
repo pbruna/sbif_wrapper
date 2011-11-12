@@ -4,7 +4,7 @@ require 'date'
 
 class SBIF
 
-  VERSION = "0.1.1"
+  VERSION = "0.2"
   SITE = "http://api.sbif.cl/api-sbif/recursos"
   INDICATORS = %w(uf utm dolar euro)
 
@@ -14,20 +14,28 @@ class SBIF
     @api_key = params[:api_key]
   end
 
-  INDICATORS.each do |indicator|
-    method_name = indicator.to_sym
-    define_method(method_name) do |date|
-      get_data(:currency => indicator, :date => date)
+  INDICATORS.each do |currency|
+    method_name = currency.to_sym
+    define_method(method_name) do |date = {}|
+      get_data(currency, date)
     end
   end
 
   private
-    def get_data(info = {})
-      params = info[:date]
-      date = format_date(:year => params[:year], :month => params[:month], :day => params[:day])
-      content = open("#{SITE}/#{info[:currency]}/#{date}?apikey=#{self.api_key}&formato=json")
+    def get_data(currency, date)
+      date = format_date(:year => date[:year], :month => date[:month], :day => date[:day])
+      content = open("#{SITE}/#{currency}/#{date}?apikey=#{self.api_key}&formato=json")
       result = parse_server_response(content)
-      JSON.parse(result)
+      values = JSON.parse(result).values[0]
+      if values.size == 1
+        to_float(values[0]["Valor"])
+      else
+        results = {}
+        values.each do |v|
+          results[v["Fecha"]] = to_float(v["Valor"])
+        end
+        results
+      end
     end
 
     def parse_server_response(content)
@@ -46,6 +54,10 @@ class SBIF
         date << e
       end
       date = date.join("/")
+    end
+    
+    def to_float(string)
+      string.gsub(".","").gsub(",",".").to_f
     end
 
 end

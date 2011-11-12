@@ -3,3 +3,8 @@
 * First Release
 
 
+=== 0.2 / 2011-11-12
+
+* Various fixes and improvements
+* Basic functionality as it should be
+
