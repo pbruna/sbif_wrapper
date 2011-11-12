@@ -16,7 +16,8 @@ class SBIF
 
   INDICATORS.each do |currency|
     method_name = currency.to_sym
-    define_method(method_name) do |date = {}|
+    define_method(method_name) do |*args|
+      date = args[0] || {}
       get_data(currency, date)
     end
   end
