@@ -4,7 +4,7 @@ require 'date'
 
 class SBIF
 
-  VERSION = "0.2.1"
+  VERSION = "0.2.2"
   SITE = "http://api.sbif.cl/api-sbif/recursos"
   INDICATORS = %w(uf utm dolar euro)
 
@@ -25,10 +25,15 @@ class SBIF
   private
     def get_data(currency, date)
       date = format_date(:year => date[:year], :month => date[:month], :day => date[:day])
-      content = open("#{SITE}/#{currency}/#{date}?apikey=#{self.api_key}&formato=json")
-      result = parse_server_response(content)
-      values = JSON.parse(result).values[0]
-      if values.size == 1
+      begin
+        content = open("#{SITE}/#{currency}/#{date}?apikey=#{self.api_key}&formato=json")
+      rescue
+        content = ""
+      end
+      values = parse_server_response(content)
+      if values.size < 1
+        "---"
+      elsif values.size == 1
         to_float(values[0]["Valor"])
       else
         results = {}
@@ -40,12 +45,16 @@ class SBIF
     end
 
     def parse_server_response(content)
-      case 
-      when content.kind_of?(StringIO) 
-        content.string
+      result = ""
+      case
+      when content.kind_of?(StringIO)
+        result = content.string
       when content.kind_of?(Tempfile)
-        content.read
+        result = content.read
+      else
+        result = JSON.generate({"Fecha" => "", "Valor" => "0"})
       end
+      JSON.parse(result).values[0]
     end
 
     def format_date(params = {})
@@ -56,7 +65,7 @@ class SBIF
       end
       date = date.join("/")
     end
-    
+
     def to_float(string)
       string.gsub(".","").gsub(",",".").to_f
     end
