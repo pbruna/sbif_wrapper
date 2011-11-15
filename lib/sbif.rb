@@ -4,7 +4,7 @@ require 'date'
 
 class SBIF
 
-  VERSION = "0.2.2"
+  VERSION = "0.2.3"
   SITE = "http://api.sbif.cl/api-sbif/recursos"
   INDICATORS = %w(uf utm dolar euro)
 
