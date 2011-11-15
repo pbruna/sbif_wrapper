@@ -32,9 +32,13 @@ class SBIF
       end
       values = parse_server_response(content)
       if values.size < 1
-        "---"
+        nil
       elsif values.size == 1
-        to_float(values[0]["Valor"])
+        begin
+          to_float(values[0]["Valor"])
+        rescue
+          nil
+        end
       else
         results = {}
         values.each do |v|
