@@ -15,3 +15,8 @@
 === 0.2.2 / 2011-11-13
 
 * Handling exception when there is no connection to the site. We return "---" for now
+
+
+=== 0.2.3 / 2011-11-15
+
+* Return nil if there is not data
